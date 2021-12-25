@@ -73,13 +73,19 @@ namespace CodeGen.Handlers
         {
             this.template = 
 @"using System;
+using System.Dynamic;
+using System.Collections.Generic;
+using System.Linq;
 namespace CodeGenHook
 {{
     public class {0}
     {{
         public List<ExpandoObject> BuildTemplateModel(dynamic settings)
         {{
-            return new List<ExpandoObject>() {{ new ExpandoObject() }};
+            dynamic obj = new ExpandoObject();
+            obj.Data = new ExpandoObject();
+            obj.Data.Name = ""CodeGen"";
+            return new List<ExpandoObject>() {{ obj }};
         }}
     }}
 }}";

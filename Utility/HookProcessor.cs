@@ -91,7 +91,9 @@ namespace CodeGen.Utility
         {
             // comple razor template
             IRazorEngine razorEngine = new RazorEngine();
-            compiledRazorTemplate = razorEngine.Compile(templateString);
+            compiledRazorTemplate = razorEngine.Compile(templateString, builder => {
+                builder.AddAssemblyReferenceByName("System.Text.Json");
+            });
             string result = compiledRazorTemplate.Run(model);
             return result;
         }

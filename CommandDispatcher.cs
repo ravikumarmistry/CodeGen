@@ -1,5 +1,6 @@
 using Autofac;
 using CodeGen.Commands;
+using CodeGen.Exceptions;
 using CodeGen.Handlers;
 using CommandLine;
 
@@ -13,25 +14,31 @@ namespace CodeGen
 
     public class CommandDispatcher : ICommandDispatcher
     {
-        public static IContainer? Container { get; set; }
+        private readonly ILifetimeScope scope;
+
+        public CommandDispatcher(ILifetimeScope scope)
+        {
+            this.scope = scope;
+        }
+
         public async Task DispatchAsync(params string[] parameters)
         {
             var result = Parser.Default.ParseArguments<NewCommand, GenCommand>(parameters);
-            if (result == null)
+
+            result.WithNotParsed((IEnumerable<Error> actions) =>
             {
-                throw new ArgumentNullException(nameof(result),
-                                                "Command can not be null.");
-            }
+                // invalid command we cant do any thing.
+            });
 
             await result.WithParsedAsync<GenCommand>(async (command) =>
             {
-                var handler = Container!.ResolveNamed<ICommandHandler>(nameof(GenCommand));
+                var handler = scope!.ResolveNamed<ICommandHandler>(nameof(GenCommand));
                 await handler.ExecuteAsync(command);
             });
 
             await result.WithParsedAsync<NewCommand>(async (newCommand) =>
             {
-                var handler = Container!.ResolveNamed<ICommandHandler>(nameof(NewCommand));
+                var handler = scope!.ResolveNamed<ICommandHandler>(nameof(NewCommand));
                 await handler.ExecuteAsync(newCommand as ICommand);
             });
         }

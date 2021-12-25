@@ -3,7 +3,7 @@ using CommandLine.Text;
 
 namespace CodeGen.Commands
 {
-    [Verb("run", true, HelpText = "Create a new template.")]
+    [Verb("run", false, HelpText = "Create a new template.")]
     public class GenCommand: ICommand
     {
         [Value(0, MetaName = "template name",
