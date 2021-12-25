@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CodeGen": {
+      "commandName": "Project",
+      "commandLineArgs": "gen Exam"
+    }
+  }
+}
